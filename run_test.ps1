@@ -9,8 +9,10 @@ echo $ENV:PATH
 & python -c "import platform;print(platform.python_implementation())"
 & python -c "import pip._vendor.distlib.wheel as wh;print(wh.COMPATIBLE_TAGS)"
 & python -m pip install wheel
-& python -m pip install tensorflow
-& python -m pip install tensorboard
+& python -m pip install tf-nightly
+
+#& python -m pip install tensorflow
+#& python -m pip install tensorboard
 
 & echo !!!!!!!!now starting tensorboard!!!!!!!!
 start "C:\Python36-x64\Scripts\tensorboard.exe" -ArgumentList '--logdir checkpoints'
