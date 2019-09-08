@@ -27,7 +27,7 @@ def test_tensorboard():
   checkpoint_dir = os.path.dirname(checkpoint_path)
 
   cp_callback = tf.keras.callbacks.ModelCheckpoint(
-    checkpoint_path, verbose=1, save_weights_only=True,
+    checkpoint_path, verbose=1, save_weights_only=False,
     # Save weights, every epoch.
     period=1)
 
