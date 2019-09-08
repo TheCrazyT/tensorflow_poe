@@ -3,6 +3,7 @@ echo $ENV:PATH
 & dir c:\
 & dir
 & python --version
+& python -m pip install --upgrade pip
 & python -c "import platform;print(platform.architecture())"
 & python -c "import platform;print(platform.machine())"
 & python -c "import platform;print(platform.python_compiler())"
@@ -11,6 +12,7 @@ echo $ENV:PATH
 & python -m pip install wheel
 & python -m pip install setuptools
 & python -m pip install tf-nightly
+& python -m pip install h5py pyyaml
 
 #& python -m pip install tensorflow
 #& python -m pip install tensorboard
