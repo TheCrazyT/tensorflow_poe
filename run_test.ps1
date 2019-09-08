@@ -11,6 +11,7 @@ echo $ENV:PATH
 & python -m pip install wheel
 & python -m pip install setuptools
 & python -m pip install tf-nightly
+& python -m pip install h5py pyyaml
 
 #& python -m pip install tensorflow
 #& python -m pip install tensorboard

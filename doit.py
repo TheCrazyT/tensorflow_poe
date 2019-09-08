@@ -1,27 +1,42 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import os
+
 import tensorflow as tf
-import time
-# Create some variables.
-v1 = tf.get_variable("v1", shape=[3], initializer = tf.zeros_initializer)
-v2 = tf.get_variable("v2", shape=[5], initializer = tf.zeros_initializer)
+from tensorflow import keras
 
-inc_v1 = v1.assign(v1+1)
-dec_v2 = v2.assign(v2-1)
+print(tf.__version__)
 
-# Add an op to initialize the variables.
-init_op = tf.global_variables_initializer()
+mnist = tf.keras.datasets.mnist
+def test_tensorboard():
+  (x_train, y_train),(x_test, y_test) = mnist.load_data()
+  x_train, x_test = x_train / 255.0, x_test / 255.0
 
-# Add ops to save and restore all the variables.
-saver = tf.train.Saver()
+  model = tf.keras.models.Sequential([
+	tf.keras.layers.Flatten(),
+	tf.keras.layers.Dense(512, activation=tf.nn.relu),
+	tf.keras.layers.Dropout(0.2),
+	tf.keras.layers.Dense(10, activation=tf.nn.softmax)
+  ])
+  model.compile(optimizer='adam',
+				loss='sparse_categorical_crossentropy',
+				metrics=['accuracy'])
+  
+  checkpoint_path = "checkpoints/cp-{epoch:04d}.ckpt"
+  print("path: %s" % checkpoint_path)
+  checkpoint_dir = os.path.dirname(checkpoint_path)
 
-# Later, launch the model, initialize the variables, do some work, and save the
-# variables to disk.
-with tf.Session() as sess:
-  sess.run(init_op)
-  while True:
-    # Do some work with the model.
-    inc_v1.op.run()
-    dec_v2.op.run()
-    # Save the variables to disk.
-    save_path = saver.save(sess, "checkpoints/cp")
-    print("Model saved in path: %s" % save_path)
-    time.sleep(1)
+  cp_callback = tf.keras.callbacks.ModelCheckpoint(
+    checkpoint_path, verbose=1, save_weights_only=True,
+    # Save weights, every epoch.
+    period=1)
+
+  #saver_callback = keras.callbacks.ModelCheckpoint(
+	#'test/test_save.ckpt', verbose=1, save_weights_only=True, period=1)
+  tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=checkpoint_dir, histogram_freq=10, profile_batch=3)
+
+  model.fit(x_train, y_train, epochs=1000000, callbacks=[cp_callback,tensorboard_callback])
+  model.evaluate(x_test, y_test)
+
+test_tensorboard()
+print("done")
